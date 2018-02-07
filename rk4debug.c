@@ -35,13 +35,15 @@ int main(){
 	
 	/* loop over different integration mesh sizes */
 	for(N=2; N<=Nmx; N*=10){
+		
 		/* konstruksi perubahan variabel dan fungsi integran untuk menghitung potensial akibat interaksi nukleus-elektron */
-		for(i=0; i<=N; i++){
+		for(i=0; i<=N-1; i++){
 			u = ((double)i)/((double)N);
 			r[i] = 1./(1.-u)-1;
 			dr[i] = 1./(1.-u)/(1.-u);
 			f[i] = (-1/r[i])*(exp(-2*r[i])/pi)*4.*pi*r[i]*r[i];
 		}
+		
 		/* syarat-syarat khusus untuk menangani integrasi di titik-titik ujung */
 		dr[0] = f[0] = 0;
 		dr[N] = f[N] = 0;
@@ -52,13 +54,14 @@ int main(){
 		dk = 2;
 		y[1] = 0.;
 		for(k=0; k<=N-2; k+=dk){
-			x = k*h; //kalo remi k/2*h (?????)
+			x = k*h;
 			derivs_int(x,y,dydx,k,f,r,dr,N);
 			rk4tf5026(y,dydx,1,x,h,y,derivs_int,k,dk,f,r,dr,N);
-		}
-		printf("N,T,S,Rk: %i %20.16f %20.16f %20.16f\n", N, trapint(f,r,dr,N), simpint(f,r,dr,N), y[1]);
-		//printf("N,T,S,Rk: %6 %20.16f %20.16f\n", N, trapint(f,r,dr,N), simpint(f,r,dr,N));
+		}		 
+			 
+		 printf("N,T,S,Rk: %i %20.16f %20.16f %20.16f\n", N, trapint(f,r,dr,N), simpint(f,r,dr,N), y[1]);
 	}
+	
 	/* deallocate NR vectors: should always clean up space at the end */
 	free_dvector(r,0,Nmx);
 	free_dvector(dr,0,Nmx);
