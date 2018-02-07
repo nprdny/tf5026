@@ -16,19 +16,25 @@
 
 /* Metode integrasi simpson */
 double simpint(double f[], double r[], double dr[], int N){
-    double sumeven=0, sumodd=0, simp;
+    double h, sumeven=0, sumodd=0, h3=0, simp;
     int i;
+	
+	h = r[N]-r[0];
+	h3 = h/(3*N);
+	
     for(i=1; i<N; i++){
         if(i%2==0){
-            sumeven=sumeven+2*f[i];
+            sumeven=(sumeven+2*f[i])*dr[i];
         }
         else{
-            sumodd=sumodd+4*f[i];
+            sumodd=(sumodd+4*f[i])*dr[i];
         }
-        //simp = ((((r[N]-r[0])/(3*N))*(f[0]+f[N]))+(((r[i+1]-r[i])/3)*(sumeven+sumodd)));
-		simp = ((r[N]-r[0])/(3*N))*((f[0]+f[N])+(sumeven+sumodd));
+        
+		// Final look
+		//simp = ((((r[N]-r[0])/(3*N))*(f[0]+f[N]))+(((r[i+1]-r[i])/3)*(sumeven+sumodd)));
+		simp = h3*(f[0]+f[N]);
+		simp = simp+(h3*(sumeven+sumodd));
     }
-    return simp;
 }
 
 /* Metode Runge Kutta */
