@@ -1,0 +1,48 @@
+#include <stdio.h>
+#include <math.h>
+#include "nrutil.h"
+
+#define Nmx 20000
+
+/* Place derivs_int() here ... */
+void derivs_int(double x,double y[],double dydx[],int k, double f[], double r[],double dr[], int N)
+{
+	dydx[1]=f[k]*dr[k];
+}
+
+/* Metode integrasi trapesium */
+ double trapint(double f[], double r[], double dr[], int N){
+    double trapz=0;
+    int i;
+	
+	// Kondisi batas
+	trapz=(f[0]+f[N])/2.;
+    
+	// Middle state
+	for(i=0; i<N; i++){
+		mid=(f[i]+f[i+1])*dr[i];
+        //trapz = trapz+((r[i+1]-r[i])*((f[i]+f[i+1])/2))*dr[i];
+		return mid;
+    }
+    
+	// Final look (?)
+	trapz = trapz + mid;
+	trapz = trapz/N;
+}
+
+/* Metode integrasi simpson */
+double simpint(double f[], double r[], double dr[], int N){
+    double sumeven=0, sumodd=0, simp;
+    int i;
+    for(i=1; i<N; i++){
+        if(i%2==0){
+            sumeven=sumeven+2*f[i];
+        }
+        else{
+            sumodd=sumodd+4*f[i];
+        }
+        //simp = ((((r[N]-r[0])/(3*N))*(f[0]+f[N]))+(((r[i+1]-r[i])/3)*(sumeven+sumodd)));
+		simp = ((r[N]-r[0])/(3*N))*((f[0]+f[N])+(sumeven+sumodd));
+    }
+    return simp;
+}
